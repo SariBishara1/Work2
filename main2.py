@@ -1,20 +1,19 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 
-# Updated ChromeDriver path for Ubuntu EC2 instance
-driver = webdriver.Chrome(service=Service("/usr/local/bin/chromedriver"))
+# Configure Chrome options
+chrome_options = Options()
+chrome_options.add_argument('--headless')  # Run in headless mode
+chrome_options.add_argument('--no-sandbox')  # Required for running as root
+chrome_options.add_argument('--disable-dev-shm-usage')  # Overcome limited resources
+chrome_options.add_argument('--disable-gpu')  # Optional for better performance
+chrome_options.add_argument('--remote-debugging-port=9222')  # Avoid DevToolsActivePort issue
 
-# Example usage: Open Google
+# Initialize ChromeDriver with options
+driver = webdriver.Chrome(service=Service("/usr/local/bin/chromedriver"), options=chrome_options)
+
+# Example action
 driver.get("https://www.google.com")
-
-# Example action: Search for a term
-search_box = driver.find_element(By.NAME, "q")
-search_box.send_keys("Selenium on AWS EC2")
-search_box.submit()
-
-# Print page title to verify functionality
-print("Page title is:", driver.title)
-
-# Close the browser
+print("Page title:", driver.title)
 driver.quit()
